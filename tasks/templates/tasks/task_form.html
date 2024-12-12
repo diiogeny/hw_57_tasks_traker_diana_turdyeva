@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание/Редактирование задачи</title>
+</head>
+<body>
+    <h1>{% if form.instance.pk %}Редактировать задачу{% else %}Создать задачу{% endif %}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">{% if form.instance.pk %}Сохранить изменения{% else %}Создать задачу{% endif %}</button>
+    </form>
+
+    <a href="{% url 'task_list' %}">Вернуться к списку задач</a>
+</body>
+</html>

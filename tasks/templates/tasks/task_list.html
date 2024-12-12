@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список задач</title>
+</head>
+<body>
+    <h1>Список задач</h1>
+    <a href="{% url 'task_create' %}">Создать задачу</a>
+
+    <ul>
+        {% for task in tasks %}
+        <li>
+            <h2>{{ task.title }}</h2>
+            <p>{{ task.status.name }} - {{ task.type.name }}</p>
+            <a href="{% url 'task_detail' task.pk %}">Подробнее</a>
+        </li>
+        {% empty %}
+        <li>Задачи не найдены.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

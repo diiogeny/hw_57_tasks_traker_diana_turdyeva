@@ -1,0 +1,8 @@
+[
+    {"model": "tasks.type", "pk": 1, "fields": {"name": "Task"}},
+    {"model": "tasks.type", "pk": 2, "fields": {"name": "Bug"}},
+    {"model": "tasks.type", "pk": 3, "fields": {"name": "Enhancement"}},
+    {"model": "tasks.status", "pk": 1, "fields": {"name": "New"}},
+    {"model": "tasks.status", "pk": 2, "fields": {"name": "In Progress"}},
+    {"model": "tasks.status", "pk": 3, "fields": {"name": "Done"}}
+]
