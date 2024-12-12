@@ -16,7 +16,7 @@ class Task(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True)
-    type = models.ForeignKey(Type, on_delete=models.SET_NULL, null=True)
+    type = models.ManyToManyField(Type)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
