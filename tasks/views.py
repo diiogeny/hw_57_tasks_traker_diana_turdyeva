@@ -63,7 +63,6 @@ def closed_tasks_last_month(request):
     return render(request, 'tasks/task_list.html', {'tasks': tasks})
 
 def tasks_by_status_and_type(request):
-    """Задачи с определенными статусами и типами"""
     tasks = Task.objects.filter(
         status__name__in=['New', 'In Progress'],
         type__name__in=['Bug', 'Enhancement']
@@ -71,6 +70,5 @@ def tasks_by_status_and_type(request):
     return render(request, 'tasks/task_list.html', {'tasks': tasks})
 
 def tasks_without_bug(request):
-    """Задачи, не содержащие 'bug' в названии"""
     tasks = Task.objects.filter(~Q(title__icontains='bug'))
     return render(request, 'tasks/task_list.html', {'tasks': tasks})
