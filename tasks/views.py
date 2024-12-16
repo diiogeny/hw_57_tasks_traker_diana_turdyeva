@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Q
 from .models import Task
 from .forms import TaskForm
 
@@ -32,3 +35,42 @@ class TaskCreateView(TemplateView):
             form.save()
             return redirect('task_list')
         return render(request, self.template_name, {'form': form})
+
+def create_task(request):
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm()
+    return render(request, 'tasks/task_form.html', {'form': form})
+
+def update_task(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'tasks/task_form.html', {'form': form})
+
+def closed_tasks_last_month(request):
+    one_month_ago = timezone.now() - timedelta(days=30)
+    tasks = Task.objects.filter(updated_at__gte=one_month_ago, status__name='Done')  # Статус "Done" как закрытая задача
+    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+
+def tasks_by_status_and_type(request):
+    """Задачи с определенными статусами и типами"""
+    tasks = Task.objects.filter(
+        status__name__in=['New', 'In Progress'],
+        type__name__in=['Bug', 'Enhancement']
+    )
+    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+
+def tasks_without_bug(request):
+    """Задачи, не содержащие 'bug' в названии"""
+    tasks = Task.objects.filter(~Q(title__icontains='bug'))
+    return render(request, 'tasks/task_list.html', {'tasks': tasks})
