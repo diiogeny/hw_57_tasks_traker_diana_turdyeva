@@ -59,7 +59,9 @@ def update_task(request, pk):
 
 def closed_tasks_last_month(request):
     one_month_ago = timezone.now() - timedelta(days=30)
-    tasks = Task.objects.filter(updated_at__gte=one_month_ago, status__name='Done')  # Статус "Done" как закрытая задача
+    tasks = Task.objects.filter(updated_at__gte=one_month_ago, status__name='Done')
+    if not tasks:
+        tasks = []
     return render(request, 'tasks/task_list.html', {'tasks': tasks})
 
 def tasks_by_status_and_type(request):
@@ -67,8 +69,12 @@ def tasks_by_status_and_type(request):
         status__name__in=['New', 'In Progress'],
         type__name__in=['Bug', 'Enhancement']
     )
+    if not tasks:
+        tasks = []
     return render(request, 'tasks/task_list.html', {'tasks': tasks})
 
 def tasks_without_bug(request):
     tasks = Task.objects.filter(~Q(title__icontains='bug'))
+    if not tasks:
+        tasks = []
     return render(request, 'tasks/task_list.html', {'tasks': tasks})
