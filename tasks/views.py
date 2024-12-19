@@ -1,80 +1,61 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
-from .models import Task
+from .models import Task, Project
 from .forms import TaskForm
+from django.urls import reverse_lazy
 
-class TaskListView(TemplateView):
+class TaskListView(ListView):
+    model = Task
     template_name = 'tasks/task_list.html'
+    context_object_name = 'tasks'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tasks'] = Task.objects.all()
-        return context
-
-class TaskDetailView(TemplateView):
+class TaskDetailView(DetailView):
+    model = Task
     template_name = 'tasks/task_detail.html'
+    context_object_name = 'task'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['task'] = get_object_or_404(Task, pk=kwargs['pk'])
-        return context
-
-class TaskCreateView(TemplateView):
+class TaskCreateView(CreateView):
+    model = Task
     template_name = 'tasks/task_form.html'
+    form_class = TaskForm
+    success_url = reverse_lazy('task_list')
 
-    def get(self, request):
-        form = TaskForm()
-        return render(request, self.template_name, {'form': form})
+class TaskUpdateView(UpdateView):
+    model = Task
+    template_name = 'tasks/task_form.html'
+    form_class = TaskForm
+    success_url = reverse_lazy('task_list')
 
-    def post(self, request):
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('task_list')
-        return render(request, self.template_name, {'form': form})
+class TaskDeleteView(DeleteView):
+    model = Task
+    template_name = 'tasks/task_confirm_delete.html'
+    success_url = reverse_lazy('task_list')
 
-def create_task(request):
-    if request.method == "POST":
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('task_list')
-    else:
-        form = TaskForm()
-    return render(request, 'tasks/task_form.html', {'form': form})
+class ProjectListView(ListView):
+    model = Project
+    template_name = 'tasks/project_list.html'
+    context_object_name = 'projects'
 
-def update_task(request, pk):
-    task = get_object_or_404(Task, pk=pk)
-    if request.method == "POST":
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            form.save()
-            return redirect('task_list')
-    else:
-        form = TaskForm(instance=task)
-    return render(request, 'tasks/task_form.html', {'form': form})
+class ProjectDetailView(DetailView):
+    model = Project
+    template_name = 'tasks/project_detail.html'
 
-def closed_tasks_last_month(request):
-    one_month_ago = timezone.now() - timedelta(days=30)
-    tasks = Task.objects.filter(updated_at__gte=one_month_ago, status__name='Done')
-    if not tasks:
-        tasks = []
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+class ProjectCreateView(CreateView):
+    model = Project
+    fields = ['name', 'start_date', 'end_date', 'description']
+    template_name = 'tasks/project_form.html'
+    success_url = reverse_lazy('project_list')
 
-def tasks_by_status_and_type(request):
-    tasks = Task.objects.filter(
-        status__name__in=['New', 'In Progress'],
-        type__name__in=['Bug', 'Enhancement']
-    )
-    if not tasks:
-        tasks = []
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+class ProjectUpdateView(UpdateView):
+    model = Project
+    fields = ['name', 'start_date', 'end_date', 'description']
+    template_name = 'tasks/project_form.html'
+    success_url = reverse_lazy('project_list')
 
-def tasks_without_bug(request):
-    tasks = Task.objects.filter(~Q(title__icontains='bug'))
-    if not tasks:
-        tasks = []
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+class ProjectDeleteView(DeleteView):
+    model = Project
+    template_name = 'tasks/project_confirm_delete.html'
+    success_url = reverse_lazy('project_list')
