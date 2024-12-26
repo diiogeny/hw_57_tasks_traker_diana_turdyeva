@@ -3,6 +3,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Task, Project
 from .forms import TaskForm
 from django.urls import reverse_lazy
@@ -17,19 +18,19 @@ class TaskDetailView(DetailView):
     template_name = 'tasks/task_detail.html'
     context_object_name = 'task'
 
-class TaskCreateView(CreateView):
+class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = 'tasks/task_form.html'
     form_class = TaskForm
     success_url = reverse_lazy('task_list')
 
-class TaskUpdateView(UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     template_name = 'tasks/task_form.html'
     form_class = TaskForm
     success_url = reverse_lazy('task_list')
 
-class TaskDeleteView(DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = 'tasks/task_confirm_delete.html'
     success_url = reverse_lazy('task_list')
@@ -43,19 +44,19 @@ class ProjectDetailView(DetailView):
     model = Project
     template_name = 'tasks/project_detail.html'
 
-class ProjectCreateView(CreateView):
+class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
     fields = ['name', 'start_date', 'end_date', 'description']
     template_name = 'tasks/project_form.html'
     success_url = reverse_lazy('project_list')
 
-class ProjectUpdateView(UpdateView):
+class ProjectUpdateView(LoginRequiredMixin, UpdateView):
     model = Project
     fields = ['name', 'start_date', 'end_date', 'description']
     template_name = 'tasks/project_form.html'
     success_url = reverse_lazy('project_list')
 
-class ProjectDeleteView(DeleteView):
+class ProjectDeleteView(LoginRequiredMixin, DeleteView):
     model = Project
     template_name = 'tasks/project_confirm_delete.html'
     success_url = reverse_lazy('project_list')
