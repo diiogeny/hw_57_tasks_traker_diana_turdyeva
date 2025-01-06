@@ -1,10 +1,10 @@
 {% extends 'base_generic.html' %}
 
 {% block content %}
-  <h1>{{ form.instance.pk|yesno:"Редактировать проект,Создать проект" }}</h1>
-  <form method="post">
+  <h1>{% if form.instance.pk %}Редактировать проект{% else %}Создать проект{% endif %}</h1>
+  <form method="post" class="form-control">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Сохранить</button>
+    <button class="btn btn-primary" type="submit">Сохранить</button>
   </form>
 {% endblock %}

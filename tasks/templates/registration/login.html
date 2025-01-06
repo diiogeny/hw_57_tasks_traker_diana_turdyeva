@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
-    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <title>Вход</title>
 </head>
 <body>
     <h1>Вход в систему</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Войти</button>
+        <button class="btn btn-primary" type="submit">Войти</button>
     </form>
+    <a href="{% url 'password_reset' %}">Забыли пароль?</a>
     <a href="{% url 'task_list' %}">Назад на главную</a>
 </body>
 </html>

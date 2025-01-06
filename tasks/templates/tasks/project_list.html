@@ -1,27 +1,24 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список проектов</title>
-</head>
-<body>
-    <h1>Список проектов</h1>
-    <a href="{% url 'project_create' %}">Создать новый проект</a>
+{% extends 'base_generic.html' %}
 
-    <ul>
-        {% for project in projects %}
-        <li>
-            <h2>{{ project.name }}</h2>
-            <p>{{ project.description }}</p>
-            <p>Дата начала: {{ project.start_date }} - Дата окончания: {{ project.end_date }}</p>
-            <a href="{% url 'project_detail' project.pk %}">Подробнее</a>
-            <a href="{% url 'project_edit' project.pk %}">Редактировать</a>
-            <a href="{% url 'project_delete' project.pk %}">Удалить</a>
-        </li>
-        {% empty %}
-        <li>Проекты не найдены.</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% block content %}
+  <div class="container">
+      <h1 class="text-center">Список проектов</h1>
+      <div class="text-end">
+          <a href="{% url 'project_create' %}" class="btn btn-success">Создать новый проект</a>
+      </div>
+      <ul class="list-group my-4">
+          {% for project in projects %}
+          <li class="list-group-item">
+              <h2>{{ project.name }}</h2>
+              <p>{{ project.description }}</p>
+              <p>Дата начала: {{ project.start_date }} - Дата окончания: {{ project.end_date }}</p>
+              <a href="{% url 'project_detail' project.pk %}" class="btn btn-info">Подробнее</a>
+              <a href="{% url 'project_edit' project.pk %}" class="btn btn-warning">Редактировать</a>
+              <a href="{% url 'project_delete' project.pk %}" class="btn btn-danger">Удалить</a>
+          </li>
+          {% empty %}
+          <li class="list-group-item text-center">Проекты не найдены.</li>
+          {% endfor %}
+      </ul>
+  </div>
+{% endblock %}

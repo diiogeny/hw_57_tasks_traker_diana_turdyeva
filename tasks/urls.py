@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from .views import ProjectCreateView, ProjectMembersUpdateView
 
 urlpatterns = [
     path('', views.TaskListView.as_view(), name='home'),
@@ -11,8 +12,10 @@ urlpatterns = [
 
     path('projects/', views.ProjectListView.as_view(), name='project_list'),
     path('projects/<int:pk>/', views.ProjectDetailView.as_view(), name='project_detail'),
-    path('projects/create/', views.ProjectCreateView.as_view(), name='project_create'),
     path('projects/<int:pk>/update/', views.ProjectUpdateView.as_view(), name='project_update'),
     path('projects/<int:pk>/delete/', views.ProjectDeleteView.as_view(), name='project_delete'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('project/<int:pk>/members/', ProjectMembersUpdateView.as_view(), name='project_members_update'),
+    path('project/create/', ProjectCreateView.as_view(), name='project_create'),
+
 ]
